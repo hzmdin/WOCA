@@ -25,7 +25,11 @@ jobs:
         with:
           node-version: 24
           cache: npm
-      - run: npm ci # also copies the MediaPipe WASM files (postinstall)
+      # npm install (not npm ci): a package-lock.json made on Windows leaves out
+      # some Linux-only optional packages (@emnapi/*), which makes the strict
+      # npm ci fail. npm install fills them in. Also copies the MediaPipe WASM
+      # files (postinstall).
+      - run: npm install --no-audit --no-fund
       - run: npm test
       - run: npm run build
       - uses: actions/configure-pages@v5

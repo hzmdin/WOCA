@@ -1,0 +1,15 @@
+{
+  "name": "WOCA",
+  "short_name": "WOCA",
+  "description": "Whenever Operating Communication Assistant: a webcam communication board controlled by eye and head gestures, with Malay speech.",
+  "lang": "ms",
+  "start_url": "./",
+  "scope": "./",
+  "display": "fullscreen",
+  "background_color": "#111418",
+  "theme_color": "#111418",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

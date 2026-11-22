@@ -1,0 +1,29 @@
+{
+  "name": "woca",
+  "version": "0.1.0",
+  "description": "WOCA (Whenever Operating Communication Assistant): webcam head/face-gesture communication board with Malay speech",
+  "license": "MIT",
+  "author": "hzmdin",
+  "homepage": "https://hzmdin.github.io/WOCA/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hzmdin/WOCA.git"
+  },
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "postinstall": "node scripts/setup-mediapipe.mjs",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "vite": "^8.3.8",
+    "vitest": "^5.1.1"
+  },
+  "dependencies": {
+    "@mediapipe/tasks-vision": "^1.2.3"
+  }
+}

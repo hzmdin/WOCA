@@ -75,6 +75,12 @@ export const DEFAULT_SETTINGS = Object.freeze({
     tileColors: true, // colour-code tiles by kind (an extra clue; labels stay)
     yesSide: 'left', // Yes/No mode: head turn to the USER'S left = "Ya" (or 'right')
   }),
+  // Auto-scan: the highlight moves by itself, the user only selects (see src/ui/scan-timer.js).
+  scan: Object.freeze({
+    enabled: false, // off by default: the caregiver turns it on
+    stepMs: 2500, // time on each tile
+    startExtraMs: 1500, // extra time before the first move on a new screen
+  }),
   speller: Object.freeze({
     suggestions: 3, // words offered in "Cadangan" (with Aksi + Kembali = max 5 tiles)
     minPrefix: 1, // letters typed before suggesting

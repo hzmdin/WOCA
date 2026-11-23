@@ -21,7 +21,7 @@ The app turns face signals into a **small set of discrete events**. Each event m
 | `SELECT` | Long blink (eyes almost fully closed > 1 s) | Other gestures can be chosen in settings |
 | `BACK` | Configurable | Optional |
 | `PAUSE` toggle | Eyes closed about 3 s, or caregiver key `P` | Lets the user rest without misfires |
-| `HELP` | Off by default (optional, 2 s hold) | Works on every screen, even while paused |
+| `HELP` | Off by default (optional, 2 s hold) | Works on every screen, even while paused. Recommended with auto-scan, where "Tolong!" can take several steps to reach |
 
 The caregiver picks which gestures are on, based on what the user does reliably and comfortably. Smile as SELECT is **opt-in only** (laughing would cause false triggers).
 
@@ -36,7 +36,8 @@ The caregiver picks which gestures are on, based on what the user does reliably 
 8. **Speller (E-Tran style):** letter groups → letter; actions Sebut (speak), Ruang (space), Padam (delete), X, Keluar.
 9. **Word prediction:** up to 3 suggestions from a built-in Malay word list plus the user's own spoken words (stored locally only).
 10. **Colour categories:** tiles are tinted by kind (menus sky blue, feelings purple, needs green, speller blue, help red, back grey; each speller letter group has its own colour, like coloured pens on an E-Tran board). Colour is only an extra clue next to the label and icon, uses a colour-blind-safe palette, never replaces the yellow highlight, and can be turned off in settings.
-11. **Status banners:** "Wajah tidak kelihatan" (face lost) and a gentle break reminder after 15 minutes of use.
+11. **Auto-scan mode (opt-in):** the highlight moves through the tiles by itself (default 2.5 s per tile, extra time on each new screen) and the user only needs one gesture, a long blink, to select. Movement gestures are switched off while it is on. The highlight never moves while a blink is being held, while paused, while the face is lost, or while a phrase is spoken. Yes/No becomes Ya / Tidak / Kembali. Caregiver keys still work. Off by default; turn it on in settings.
+12. **Status banners:** "Wajah tidak kelihatan" (face lost) and a gentle break reminder after 15 minutes of use.
 
 ## 5. Possible future features
 - Phrase history and favourites.

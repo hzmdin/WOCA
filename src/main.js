@@ -24,12 +24,19 @@ import { createWordPredictor } from './storage/word-history.js';
 // config.calibration is replaced live by calibration/re-centre.
 const config = { settings: loadSettings(), calibration: loadCalibration() };
 const boards = loadBoards();
-let engineState = createEngineState(config.settings.gestureMap);
+// Auto-scan moves the highlight by itself, so the movement gestures are switched off:
+// only SELECT, BACK, PAUSE and HELP stay (fewer ways to trigger something by accident).
+const SCAN_OFF_EVENTS = ['LEFT', 'RIGHT', 'UP', 'DOWN'];
+const engineGestureMap = () =>
+  config.settings.scan.enabled
+    ? { ...config.settings.gestureMap, ...Object.fromEntries(SCAN_OFF_EVENTS.map((e) => [e, null])) }
+    : config.settings.gestureMap;
+let engineState = createEngineState(engineGestureMap());
 let driftState = createDriftState();
 
 /** Fresh engine (nothing half-held carries over), keeping the pause state. */
 function resetEngine() {
-  engineState = createEngineState(config.settings.gestureMap, { paused: engineState.paused });
+  engineState = createEngineState(engineGestureMap(), { paused: engineState.paused });
   driftState = createDriftState();
 }
 
@@ -167,6 +174,7 @@ function runTrackingLoop(tracker) {
         // Calibrating or re-centring: no gesture events.
         caregiver.feed(signals);
         board.setProgress({});
+        board.setInputLive(false);
         debugPanel.update(signals, null);
       } else {
         const engineOut = stepEngine(engineState, signals, config);
@@ -178,6 +186,7 @@ function runTrackingLoop(tracker) {
           else if (ev.type !== 'PAUSE' && started() && !help.isActive() && !settingsScreen.isOpen()) board.handleEvent(ev.type);
         }
         board.setProgress(engineOut.paused || !started() ? {} : engineOut.progress);
+        board.setInputLive(!engineOut.paused && signals.faceFound && started());
         banners.update(signals, { paused: engineOut.paused });
         showPaused(engineOut.paused);
         const drift = stepDrift(driftState, signals, engineOut, config);

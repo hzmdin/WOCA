@@ -23,6 +23,7 @@ export const STRINGS = Object.freeze({
   board: Object.freeze({
     back: 'Kembali',
     yesNoHint: 'Pusing kepala untuk jawab. Kelip lama untuk kembali.',
+    scanHint: 'Tunggu petak yang diserlahkan, kemudian kelip lama untuk memilih.',
   }),
 
   // Status banners over the board
@@ -75,6 +76,8 @@ export const STRINGS = Object.freeze({
       'help.volume': 'Kekuatan bunyi penggera',
       'board.yesSide': '"Ya" di sebelah',
       'board.tileColors': 'Warna pada petak (mengikut jenis)',
+      'scan.enabled': 'Imbasan automatik (hanya kelip lama untuk memilih)',
+      'scan.stepMs': 'Masa pada setiap petak (imbasan)',
       'board.returnHomeMs': 'Kembali ke papan Utama selepas',
       'breakReminder.afterMin': 'Peringatan rehat selepas',
     }),

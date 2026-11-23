@@ -23,6 +23,8 @@ export const EDITABLE = Object.freeze([
   { path: 'help.volume', type: 'number', min: 0.1, max: 1, step: 0.05 },
   { path: 'board.yesSide', type: 'side' },
   { path: 'board.tileColors', type: 'bool' },
+  { path: 'scan.enabled', type: 'bool' },
+  { path: 'scan.stepMs', type: 'number', min: 1500, max: 6000, step: 250 },
   { path: 'board.returnHomeMs', type: 'number', min: 1000, max: 10000, step: 500 },
   { path: 'breakReminder.afterMin', type: 'number', min: 5, max: 60, step: 5 },
 ]);

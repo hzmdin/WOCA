@@ -14,7 +14,7 @@ const S = STRINGS.settings;
 const RELOAD_DELAY_MS = 700;
 
 const TAB_FIELDS = {
-  gestures: [...EVENTS.map((e) => `gestureMap.${e}`), 'expressionGuard.enabled'],
+  gestures: ['scan.enabled', 'scan.stepMs', ...EVENTS.map((e) => `gestureMap.${e}`), 'expressionGuard.enabled'],
   timing: ['thresholdPct', 'closedThresholdPct', 'holdMs', 'cooldownMs', 'longBlinkMs', 'eventHoldMs.HELP', 'board.yesSide', 'board.tileColors', 'board.returnHomeMs', 'breakReminder.afterMin'],
   voice: ['voice.name', 'voice.rate', 'help.volume'],
 };

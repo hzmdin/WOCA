@@ -498,3 +498,7 @@ h1 {
   color: var(--muted);
   display: inline-block;
 }
+
+/* Auto-scan: the highlight moves by itself, so the left/right arrows (head or eye
+   turns) are not used; hide them to avoid suggesting a gesture that does nothing. */
+.board.scan .board-arrow { visibility: hidden; }

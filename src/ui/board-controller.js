@@ -9,7 +9,11 @@
 // On a Yes/No board (mode 'yesno'), LEFT/RIGHT answer immediately and
 // SELECT/BACK go back; the user stays on the board between answers.
 //
-// opts (all functions): { yesSide: 'left' | 'right' } from settings.board
+// Auto-scan (opts.scan): the highlight is moved by a timer (src/ui/scan-timer.js)
+// and only SELECT acts, so a Yes/No board becomes [Ya, Tidak, Kembali] with the
+// normal highlight + SELECT, and an answer keeps the user on that board.
+//
+// opts (all functions): { yesSide: 'left' | 'right', scan: boolean } from settings
 import { STRINGS } from './strings-ms.js';
 import { HOME_BOARD } from '../storage/default-boards.js';
 
@@ -23,12 +27,13 @@ export const isYesNo = (boards, boardId) => findBoard(boards, boardId)?.mode ===
  * Tiles to show for a board, in screen order. Normal boards get "Kembali"
  * (except Home). Yes/No boards are [left half, right half].
  */
-export function tilesOf(boards, boardId, { yesSide = 'left' } = {}) {
+export function tilesOf(boards, boardId, { yesSide = 'left', scan = false } = {}) {
   const board = findBoard(boards, boardId);
   if (!board) return [];
   if (board.mode === 'yesno') {
     const [yes, no] = board.tiles;
-    return yesSide === 'right' ? [no, yes] : [yes, no];
+    const ordered = yesSide === 'right' ? [no, yes] : [yes, no];
+    return scan ? [...ordered, BACK_TILE] : ordered;
   }
   return boardId === HOME_BOARD ? board.tiles : [...board.tiles, BACK_TILE];
 }
@@ -113,7 +118,7 @@ export function boardStep(state, event, boards, opts = {}) {
   const tiles = tilesOf(boards, state.boardId, opts);
   const n = tiles.length;
   if (!n) return { state: createBoardState(), action: { type: 'navigate' } };
-  if (isYesNo(boards, state.boardId)) return yesNoStep(state, event, tiles);
+  if (isYesNo(boards, state.boardId) && !opts.scan) return yesNoStep(state, event, tiles);
   const cols = gridColumns(n);
   const move = (delta) => ({ state: { ...state, index: (state.index + delta + n) % n }, action: null });
 
@@ -130,7 +135,8 @@ export function boardStep(state, event, boards, opts = {}) {
       if (tile.speller) return { state, action: { type: 'speller' } };
       if (tile.back) return { state: goBack(state), action: { type: 'navigate' } };
       if (tile.goto) return { state: goTo(state, tile.goto), action: { type: 'navigate' } };
-      return { state, action: speakAction(tile) };
+      // Scanning a Yes/No board: stay for the next question, like the head-turn version.
+      return { state, action: speakAction(tile, isYesNo(boards, state.boardId) ? { stay: true } : {}) };
     }
     default:
       return { state, action: null };

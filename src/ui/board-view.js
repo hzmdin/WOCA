@@ -68,19 +68,22 @@ export function createBoardView(container, { onTileClick }) {
      * @param opts { yesSide } from settings.board
      */
     render(boards, state, opts = {}) {
-      const yesNo = isYesNo(boards, state.boardId);
+      const yesNoBoard = isYesNo(boards, state.boardId);
+      const yesNo = yesNoBoard && !opts.scan; // scanning shows Ya / Tidak / Kembali as normal tiles
       const tiles = tilesOf(boards, state.boardId, opts);
+      container.classList.toggle('scan', !!opts.scan);
       // On Yes/No nothing is highlighted until the user has answered.
-      const colorOf = opts.colors === false ? null : (t, i) => (yesNo ? yesNoColor(i, opts.yesSide) : tileColor(t, state.boardId));
+      const colorOf = opts.colors === false ? null : (t, i) => (yesNoBoard && i < 2 ? yesNoColor(i, opts.yesSide) : tileColor(t, state.boardId));
       drawTiles(tiles, yesNo && !state.answered ? -1 : state.index, { yesNo, cols: gridColumns(tiles.length), colorOf });
       typedEl.hidden = true;
-      hintEl.textContent = yesNo ? STRINGS.board.yesNoHint : '';
+      hintEl.textContent = yesNo ? STRINGS.board.yesNoHint : opts.scan ? STRINGS.board.scanHint : '';
     },
 
     /** Redraw the speller: its level's tiles, the typed text and the suggested words. */
     renderSpeller(state, suggestions = [], opts = {}) {
       const colorOf = opts.colors === false ? null : (t) => tileColor(t, null, state.level === 'letters' ? state.group : null);
       drawTiles(spellerTiles(state, suggestions), state.index, { yesNo: false, cols: SPELLER_COLUMNS, colorOf });
+      container.classList.toggle('scan', !!opts.scan);
       typedEl.hidden = false;
       typedEl.classList.toggle('empty', !state.text);
       typedEl.textContent = state.text || STRINGS.speller.empty;
@@ -90,7 +93,7 @@ export function createBoardView(container, { onTileClick }) {
         hint.textContent = `💡 ${suggestions.join(' · ')}`;
         typedEl.append(hint);
       }
-      hintEl.textContent = '';
+      hintEl.textContent = opts.scan ? STRINGS.board.scanHint : '';
     },
 
     /** Per-frame hold feedback from the gesture engine (0..1 per event). */

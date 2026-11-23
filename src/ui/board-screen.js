@@ -4,6 +4,9 @@
 import { createBoardState, boardStep, isYesNo } from './board-controller.js';
 import { createBoardView } from './board-view.js';
 import { createSpellerState, spellerStep, currentPrefix } from './speller-controller.js';
+import { createScanState, scanStep } from './scan-timer.js';
+
+const SCAN_TICK_MS = 100; // how often the scan timer is checked (not a gesture threshold)
 
 const KEY_EVENTS = {
   ArrowLeft: 'LEFT',
@@ -26,13 +29,22 @@ export function createBoardScreen(container, { config, getBoards, speaker, chime
   let state = createBoardState();
   let speller = null; // speller state while the speller is open, else null
   let homeTimer = null;
+  // Auto-scan bookkeeping (see scan-timer.js)
+  let scanState = createScanState();
+  let inputLive = false; // set by main.js each frame: not paused, face visible
+  let selectProgress = 0; // 0..1 hold of SELECT; the highlight must not move while > 0
+  let speaking = false; // don't move the highlight while a phrase is being spoken
 
-  const opts = () => ({ yesSide: config.settings.board.yesSide, colors: config.settings.board.tileColors });
+  const opts = () => ({
+    yesSide: config.settings.board.yesSide,
+    colors: config.settings.board.tileColors,
+    scan: config.settings.scan.enabled,
+  });
 
   const view = createBoardView(container, {
     onTileClick(index) {
       // On Yes/No, clicking a half answers it (left half = LEFT).
-      if (!speller && isYesNo(getBoards(), state.boardId)) return handleEvent(index === 0 ? 'LEFT' : 'RIGHT');
+      if (!speller && !opts().scan && isYesNo(getBoards(), state.boardId)) return handleEvent(index === 0 ? 'LEFT' : 'RIGHT');
       if (speller) speller = { ...speller, index };
       else state = { ...state, index };
       render(); // show the clicked tile as highlighted
@@ -46,11 +58,16 @@ export function createBoardScreen(container, { config, getBoards, speaker, chime
   async function speak(action) {
     chime.play();
     view.showSpoken(action.text);
+    speaking = true;
     await speaker.speak(action.text, { audio: action.audio });
-    if (action.stay) return; // Yes/No: stay for the next question
+    if (action.stay) {
+      speaking = false;
+      return; // Yes/No: stay for the next question
+    }
     // Back to Home after a pause, unless the user has moved on meanwhile.
     clearTimeout(homeTimer);
     homeTimer = setTimeout(() => {
+      speaking = false;
       handleEvent('HOME');
       view.showSpoken('');
     }, config.settings.board.returnHomeMs);
@@ -74,7 +91,12 @@ export function createBoardScreen(container, { config, getBoards, speaker, chime
 
   /** Apply one event: 'LEFT' | 'RIGHT' | 'UP' | 'DOWN' | 'SELECT' | 'BACK' | 'HOME' */
   function handleEvent(type) {
-    if (type !== 'HOME') clearTimeout(homeTimer);
+    if (type !== 'HOME') {
+      clearTimeout(homeTimer);
+      speaking = false;
+    }
+    // After the user acts, the scan starts over with extra time on the new tile.
+    if (type === 'SELECT' || type === 'BACK' || type === 'HOME') scanState = createScanState();
     if (speller) return type === 'HOME' ? undefined : spellerEvent(type);
     const before = state;
     const out = boardStep(state, type, getBoards(), opts());
@@ -99,10 +121,35 @@ export function createBoardScreen(container, { config, getBoards, speaker, chime
     handleEvent(type);
   });
 
+  // Auto-scan: a timer moves the highlight; everything else (hold, pause, face lost) only stops it.
+  setInterval(() => {
+    if (!config.settings.scan.enabled) return;
+    const out = scanStep(
+      scanState,
+      {
+        now: performance.now(),
+        live: inputLive && !isBlocked() && !speaking,
+        holding: selectProgress > 0,
+        screen: speller ? `speller:${speller.level}:${speller.group}` : `board:${state.boardId}`,
+        index: speller ? speller.index : state.index,
+      },
+      config.settings.scan
+    );
+    scanState = out.state;
+    if (out.advance) handleEvent('RIGHT');
+  }, SCAN_TICK_MS);
+
   render();
 
   return {
     handleEvent,
-    setProgress: (progress) => view.setProgress(progress),
+    setProgress(progress) {
+      selectProgress = progress.SELECT ?? 0;
+      view.setProgress(progress);
+    },
+    /** Called every frame by main.js: is the user's input trustworthy right now? */
+    setInputLive(live) {
+      inputLive = live;
+    },
   };
 }

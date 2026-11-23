@@ -3,7 +3,7 @@
 // the last spoken phrase in large text. Yes/No boards are drawn as two
 // halves that fill up while the user holds the head turn toward them.
 // Render only; no navigation logic.
-import { tilesOf, gridColumns, isYesNo } from './board-controller.js';
+import { tilesOf, gridColumns, isYesNo, pageWindow } from './board-controller.js';
 import { spellerTiles, SPELLER_COLUMNS } from './speller-controller.js';
 import { STRINGS } from './strings-ms.js';
 import { tileColor, yesNoColor } from './tile-colors.js';
@@ -42,11 +42,19 @@ export function createBoardView(container, { onTileClick }) {
     if (tile) onTileClick(Number(tile.dataset.index));
   });
 
-  function drawTiles(tiles, activeIndex, { yesNo, cols, colorOf }) {
+  /** Dots under the tiles in simple mode: which page is on screen. */
+  let pageDots = '';
+
+  function drawTiles(allTiles, activeIndex, { yesNo, cols, colorOf, pageSize }) {
     container.classList.toggle('yesno', yesNo);
-    grid.style.setProperty('--cols', cols);
+    // Simple mode: only one page of tiles is drawn; data-index stays the index in the whole list.
+    const win = yesNo ? pageWindow(0, allTiles.length, null) : pageWindow(Math.max(activeIndex, 0), allTiles.length, pageSize);
+    const tiles = allTiles.slice(win.start, win.end);
+    pageDots = win.pages > 1 ? Array.from({ length: win.pages }, (_, p) => (p === win.page ? '●' : '○')).join(' ') : '';
+    grid.style.setProperty('--cols', win.pages > 1 ? tiles.length : cols);
     grid.innerHTML = tiles
-      .map((t, i) => {
+      .map((t, local) => {
+        const i = local + win.start;
         const color = colorOf?.(t, i);
         return `
       <button type="button" tabindex="-1" class="tile${yesNo ? ' half' : ''}${i === activeIndex ? ' active' : ''}"${color ? ` data-color="${color}"` : ''}
@@ -74,15 +82,15 @@ export function createBoardView(container, { onTileClick }) {
       container.classList.toggle('scan', !!opts.scan);
       // On Yes/No nothing is highlighted until the user has answered.
       const colorOf = opts.colors === false ? null : (t, i) => (yesNoBoard && i < 2 ? yesNoColor(i, opts.yesSide) : tileColor(t, state.boardId));
-      drawTiles(tiles, yesNo && !state.answered ? -1 : state.index, { yesNo, cols: gridColumns(tiles.length), colorOf });
+      drawTiles(tiles, yesNo && !state.answered ? -1 : state.index, { yesNo, cols: gridColumns(tiles.length), colorOf, pageSize: opts.pageSize });
       typedEl.hidden = true;
-      hintEl.textContent = yesNo ? STRINGS.board.yesNoHint : opts.scan ? STRINGS.board.scanHint : '';
+      hintEl.textContent = [yesNo ? STRINGS.board.yesNoHint : opts.scan ? STRINGS.board.scanHint : '', pageDots].filter(Boolean).join('   ');
     },
 
     /** Redraw the speller: its level's tiles, the typed text and the suggested words. */
     renderSpeller(state, suggestions = [], opts = {}) {
       const colorOf = opts.colors === false ? null : (t) => tileColor(t, null, state.level === 'letters' ? state.group : null);
-      drawTiles(spellerTiles(state, suggestions), state.index, { yesNo: false, cols: SPELLER_COLUMNS, colorOf });
+      drawTiles(spellerTiles(state, suggestions), state.index, { yesNo: false, cols: SPELLER_COLUMNS, colorOf, pageSize: opts.pageSize });
       container.classList.toggle('scan', !!opts.scan);
       typedEl.hidden = false;
       typedEl.classList.toggle('empty', !state.text);
@@ -93,7 +101,7 @@ export function createBoardView(container, { onTileClick }) {
         hint.textContent = `💡 ${suggestions.join(' · ')}`;
         typedEl.append(hint);
       }
-      hintEl.textContent = opts.scan ? STRINGS.board.scanHint : '';
+      hintEl.textContent = [opts.scan ? STRINGS.board.scanHint : '', pageDots].filter(Boolean).join('   ');
     },
 
     /** Per-frame hold feedback from the gesture engine (0..1 per event). */

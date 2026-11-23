@@ -72,6 +72,8 @@ export const DEFAULT_SETTINGS = Object.freeze({
   board: Object.freeze({
     returnHomeMs: 3000, // after a phrase is spoken, go back to Home
     maxTiles: 6, // per board, including the automatic back tile
+    simplePageSize: 3, // simple mode: at most this many (bigger) tiles on screen at once
+    simpleMode: false, // show few, huge tiles; the highlight flows on to the next page
     tileColors: true, // colour-code tiles by kind (an extra clue; labels stay)
     yesSide: 'left', // Yes/No mode: head turn to the USER'S left = "Ya" (or 'right')
   }),
@@ -80,6 +82,7 @@ export const DEFAULT_SETTINGS = Object.freeze({
     enabled: false, // off by default: the caregiver turns it on
     stepMs: 2500, // time on each tile
     startExtraMs: 1500, // extra time before the first move on a new screen
+    speakTiles: false, // audio scan: say each highlighted tile aloud (for blurry vision)
   }),
   speller: Object.freeze({
     suggestions: 3, // words offered in "Cadangan" (with Aksi + Kembali = max 5 tiles)

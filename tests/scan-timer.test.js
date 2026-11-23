@@ -97,3 +97,40 @@ describe('scan settings', () => {
     expect(validateSettings(bad)).toContainEqual({ code: 'invalid', path: 'scan.stepMs' });
   });
 });
+
+import { tileSpeech, announceStep } from '../src/ui/scan-audio.js';
+import { spellerTiles, createSpellerState } from '../src/ui/speller-controller.js';
+
+describe('audio scan', () => {
+  it('says a tile by its label and spells out a letter group', () => {
+    expect(tileSpeech({ label: 'Keperluan', icon: '🙋' })).toBe('Keperluan');
+    const groups = spellerTiles(createSpellerState()).filter((t) => t.group !== undefined);
+    expect(tileSpeech(groups[0])).toBe('A, B, C, D, E');
+    expect(tileSpeech(groups[4])).toBe('U, V, W, Y, Z');
+    expect(tileSpeech({ label: 'K', letter: 'K' })).toBe('K');
+  });
+
+  it('announces a new tile once, not on every check', () => {
+    let last = null;
+    const heard = [];
+    for (const key of ['home:0', 'home:0', 'home:0', 'home:1', 'home:1', 'home:2']) {
+      const out = announceStep(last, { enabled: true, live: true, key });
+      last = out.lastKey;
+      if (out.announce) heard.push(key);
+    }
+    expect(heard).toEqual(['home:0', 'home:1', 'home:2']);
+  });
+
+  it('stays silent when off or not live, and re-announces the tile when live again', () => {
+    expect(announceStep(null, { enabled: false, live: true, key: 'a' }).announce).toBe(false);
+    const away = announceStep('a', { enabled: true, live: false, key: 'a' });
+    expect(away).toEqual({ lastKey: null, announce: false });
+    expect(announceStep(away.lastKey, { enabled: true, live: true, key: 'a' }).announce).toBe(true);
+  });
+
+  it('audio scan is off by default and saved as an editable setting', () => {
+    expect(DEFAULT_SETTINGS.scan.speakTiles).toBe(false);
+    const stored = pickEditable({ ...DEFAULT_SETTINGS, scan: { ...DEFAULT_SETTINGS.scan, speakTiles: true } });
+    expect(mergeSettings(stored).scan.speakTiles).toBe(true);
+  });
+});

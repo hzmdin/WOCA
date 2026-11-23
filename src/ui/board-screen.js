@@ -1,10 +1,11 @@
 // Connects the board controller, speller, view, speech and keyboard.
 // Events come from the user's gestures (via main.js) or the caregiver's keyboard:
 //   ← → ↑ ↓ = move   Enter / Space = select   Backspace = back
-import { createBoardState, boardStep, isYesNo } from './board-controller.js';
+import { createBoardState, boardStep, isYesNo, tilesOf } from './board-controller.js';
 import { createBoardView } from './board-view.js';
-import { createSpellerState, spellerStep, currentPrefix } from './speller-controller.js';
+import { createSpellerState, spellerStep, currentPrefix, spellerTiles } from './speller-controller.js';
 import { createScanState, scanStep } from './scan-timer.js';
+import { tileSpeech, announceStep } from './scan-audio.js';
 
 const SCAN_TICK_MS = 100; // how often the scan timer is checked (not a gesture threshold)
 
@@ -34,11 +35,13 @@ export function createBoardScreen(container, { config, getBoards, speaker, chime
   let inputLive = false; // set by main.js each frame: not paused, face visible
   let selectProgress = 0; // 0..1 hold of SELECT; the highlight must not move while > 0
   let speaking = false; // don't move the highlight while a phrase is being spoken
+  let lastAnnounced = null; // audio scan: screen+tile already said aloud
 
   const opts = () => ({
     yesSide: config.settings.board.yesSide,
     colors: config.settings.board.tileColors,
     scan: config.settings.scan.enabled,
+    pageSize: config.settings.board.simpleMode ? config.settings.board.simplePageSize : null,
   });
 
   const view = createBoardView(container, {
@@ -124,19 +127,28 @@ export function createBoardScreen(container, { config, getBoards, speaker, chime
   // Auto-scan: a timer moves the highlight; everything else (hold, pause, face lost) only stops it.
   setInterval(() => {
     if (!config.settings.scan.enabled) return;
+    const screen = () => (speller ? `speller:${speller.level}:${speller.group}` : `board:${state.boardId}`);
+    const index = () => (speller ? speller.index : state.index);
+    const live = inputLive && !isBlocked() && !speaking;
     const out = scanStep(
       scanState,
-      {
-        now: performance.now(),
-        live: inputLive && !isBlocked() && !speaking,
-        holding: selectProgress > 0,
-        screen: speller ? `speller:${speller.level}:${speller.group}` : `board:${state.boardId}`,
-        index: speller ? speller.index : state.index,
-      },
+      { now: performance.now(), live, holding: selectProgress > 0, screen: screen(), index: index() },
       config.settings.scan
     );
     scanState = out.state;
     if (out.advance) handleEvent('RIGHT');
+    // Audio scan: say the tile the highlight is on now (speaking again cuts off the previous one).
+    const heard = announceStep(lastAnnounced, {
+      enabled: config.settings.scan.speakTiles,
+      live,
+      key: `${screen()}:${index()}`,
+    });
+    lastAnnounced = heard.lastKey;
+    if (heard.announce) {
+      const tiles = speller ? spellerTiles(speller, suggestions()) : tilesOf(getBoards(), state.boardId, opts());
+      const tile = tiles[index()];
+      if (tile) speaker.speak(tileSpeech(tile));
+    }
   }, SCAN_TICK_MS);
 
   render();

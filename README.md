@@ -15,7 +15,8 @@
 - **Yes / No mode:** two huge halves; a glance to one side answers.
 - **Call for help:** a "Tolong!" tile (and an optional dedicated gesture) starts a loud, repeating alarm that **only the caregiver** can stop.
 - **Colour-coded tiles** by category (colour-blind-safe, labels always stay; can be turned off in settings).
-- **Auto-scan mode** (optional): the highlight moves by itself and a long blink selects, so only one gesture is needed on tired days. Turn it on in settings.
+- **Auto-scan mode** (optional): the highlight moves by itself and a long blink selects, so only one gesture is needed on tired days. Turn it on in settings. **Audio scan** says each highlighted tile aloud, for people who cannot see the screen well.
+- **Simple mode** (optional): only 3 huge tiles on screen at a time, for blurry vision or tired days.
 - **Speller** (E-Tran style letter groups) with **Malay word prediction** that learns the user's own words.
 - **Calibration** to the user's own range of movement, and **re-centre** after the bed angle changes.
 - **Safety by design:** a hold time, return-to-neutral and cooldown for every gesture; input is ignored while laughing or talking, while the head is turned, or when the face is lost; a long blink needs the eyes almost fully closed (so looking down doesn't select).

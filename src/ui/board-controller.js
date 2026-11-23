@@ -50,6 +50,25 @@ export function rowSwitch(index, n, cols, dir) {
   return Math.min(row * cols + (index % cols), n - 1);
 }
 
+/**
+ * Simple mode shows the tiles a page at a time. Pages are balanced (4 tiles → 2+2,
+ * 5 → 3+2) so a page never holds one lonely tile. The highlight index still runs
+ * over the whole list, so scanning and LEFT/RIGHT flow on to the next page by themselves.
+ * @returns { start, end, page, pages } the tiles [start, end) are on screen
+ */
+export function pageWindow(index, n, pageSize) {
+  if (!pageSize || n <= pageSize) return { start: 0, end: n, page: 0, pages: 1 };
+  const pages = Math.ceil(n / pageSize);
+  const base = Math.floor(n / pages);
+  const extra = n % pages; // the first `extra` pages get one more tile
+  let start = 0;
+  for (let page = 0; page < pages; page++) {
+    const end = start + base + (page < extra ? 1 : 0);
+    if (index < end || page === pages - 1) return { start, end, page, pages };
+    start = end;
+  }
+}
+
 /** Columns for n big tiles: 1–3 in one row, 4 as 2×2, 5–6 as 3×2. */
 export function gridColumns(n) {
   if (n <= 3) return Math.max(1, n);

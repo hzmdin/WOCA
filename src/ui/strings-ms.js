@@ -74,6 +74,7 @@ export const STRINGS = Object.freeze({
       'voice.rate': 'Kelajuan suara',
       'help.volume': 'Kekuatan bunyi penggera',
       'board.yesSide': '"Ya" di sebelah',
+      'board.tileColors': 'Warna pada petak (mengikut jenis)',
       'board.returnHomeMs': 'Kembali ke papan Utama selepas',
       'breakReminder.afterMin': 'Peringatan rehat selepas',
     }),

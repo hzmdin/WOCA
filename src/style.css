@@ -75,6 +75,26 @@ h1 {
   transform: scale(1.03);
   box-shadow: 0 0 0 4px rgba(255, 210, 63, 0.35);
 }
+/* Category colours (src/ui/tile-colors.js). Okabe-Ito palette: stays distinct for
+   colour-blind viewers. Only an extra clue: labels and icons always stay.
+   The yellow border / ring still means "highlighted": categories only tint the
+   tile and draw a bar, never recolour the border, so orange can't look highlighted. */
+.tile[data-color] {
+  background: color-mix(in srgb, var(--c) 22%, #1f252d);
+  box-shadow: inset 0 -14px 0 var(--c); /* colour bar, still visible when highlighted */
+}
+.tile[data-color].active {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--c) 34%, #1f252d);
+  box-shadow: inset 0 -14px 0 var(--c), 0 0 0 4px rgba(255, 210, 63, 0.35);
+}
+.tile[data-color='sky'] { --c: #56b4e9; }
+.tile[data-color='blue'] { --c: #0072b2; }
+.tile[data-color='orange'] { --c: #e69f00; }
+.tile[data-color='green'] { --c: #009e73; }
+.tile[data-color='purple'] { --c: #cc79a7; }
+.tile[data-color='red'] { --c: #e5382a; }
+.tile[data-color='grey'] { --c: #8a939e; }
 .tile-icon { font-size: clamp(48px, 7vh, 96px); line-height: 1; }
 .tile-label { font-size: clamp(48px, 6vh, 72px); font-weight: 700; line-height: 1.1; }
 /* Progress ring: fills clockwise while SELECT is held (--p from 0 to 1). */

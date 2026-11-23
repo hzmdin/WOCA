@@ -72,6 +72,7 @@ export const DEFAULT_SETTINGS = Object.freeze({
   board: Object.freeze({
     returnHomeMs: 3000, // after a phrase is spoken, go back to Home
     maxTiles: 6, // per board, including the automatic back tile
+    tileColors: true, // colour-code tiles by kind (an extra clue; labels stay)
     yesSide: 'left', // Yes/No mode: head turn to the USER'S left = "Ya" (or 'right')
   }),
   speller: Object.freeze({

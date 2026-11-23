@@ -35,7 +35,8 @@ The caregiver picks which gestures are on, based on what the user does reliably 
 7. **Caregiver settings:** movements, sensitivity, hold times, voice, phrases, backup/restore. Saved locally.
 8. **Speller (E-Tran style):** letter groups → letter; actions Sebut (speak), Ruang (space), Padam (delete), X, Keluar.
 9. **Word prediction:** up to 3 suggestions from a built-in Malay word list plus the user's own spoken words (stored locally only).
-10. **Status banners:** "Wajah tidak kelihatan" (face lost) and a gentle break reminder after 15 minutes of use.
+10. **Colour categories:** tiles are tinted by kind (menus sky blue, feelings purple, needs green, speller blue, help red, back grey; each speller letter group has its own colour, like coloured pens on an E-Tran board). Colour is only an extra clue next to the label and icon, uses a colour-blind-safe palette, never replaces the yellow highlight, and can be turned off in settings.
+11. **Status banners:** "Wajah tidak kelihatan" (face lost) and a gentle break reminder after 15 minutes of use.
 
 ## 5. Possible future features
 - Phrase history and favourites.

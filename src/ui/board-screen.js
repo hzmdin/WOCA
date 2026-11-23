@@ -27,7 +27,7 @@ export function createBoardScreen(container, { config, getBoards, speaker, chime
   let speller = null; // speller state while the speller is open, else null
   let homeTimer = null;
 
-  const opts = () => ({ yesSide: config.settings.board.yesSide });
+  const opts = () => ({ yesSide: config.settings.board.yesSide, colors: config.settings.board.tileColors });
 
   const view = createBoardView(container, {
     onTileClick(index) {
@@ -41,7 +41,7 @@ export function createBoardScreen(container, { config, getBoards, speaker, chime
   });
 
   const suggestions = () => predictor.suggest(currentPrefix(speller));
-  const render = () => (speller ? view.renderSpeller(speller, suggestions()) : view.render(getBoards(), state, opts()));
+  const render = () => (speller ? view.renderSpeller(speller, suggestions(), opts()) : view.render(getBoards(), state, opts()));
 
   async function speak(action) {
     chime.play();

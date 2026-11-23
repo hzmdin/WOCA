@@ -1,10 +1,11 @@
 // Caregiver controls: buttons, keyboard shortcuts, calibration wizard and
 // re-centre overlay. These always work, even if the user's gestures don't.
-//   P = pause/resume   K = calibrate   C = re-centre   T = test voice   S = settings   Esc = cancel
+//   P = pause/resume   K = calibrate   C = re-centre   G = gesture test   T = test voice   S = settings   Esc = cancel
 import { STRINGS } from './strings-ms.js';
 import { saveCalibration } from '../storage/calibration-store.js';
 import { createCalibrationWizard } from './calibration-wizard.js';
 import { createRecentreOverlay } from './recentre-overlay.js';
+import { createGestureTestScreen } from './gesture-test-screen.js';
 
 /**
  * @param container element for the buttons and info lines
@@ -25,6 +26,7 @@ export function createCaregiverControls(
     <div class="caregiver-buttons">
       <button data-action="recentre" class="big-button secondary" type="button">${STRINGS.recentre.button}</button>
       <button data-action="calibrate" class="big-button secondary" type="button">${STRINGS.calibration.open} (K)</button>
+      <button data-action="gestures" class="big-button secondary" type="button">${STRINGS.gestureTest.open} (G)</button>
       <button data-action="voice" class="big-button secondary" type="button">${STRINGS.speech.testButton}</button>
       <button data-action="settings" class="big-button secondary" type="button">${STRINGS.settings.open}</button>
     </div>
@@ -81,22 +83,36 @@ export function createCaregiverControls(
     onDone: applyCalibration,
   });
 
+  const gestureTest = createGestureTestScreen(document.body, {
+    getSettings: () => config.settings,
+    getCalibration: () => config.calibration,
+    onClose() {
+      onCalibrationChanged(); // nothing half-held carries over into the app
+      button('gestures').focus();
+    },
+  });
+
   const startRecentre = () => {
-    if (!wizard.isOpen()) recentreOverlay.start();
+    if (!wizard.isOpen() && !gestureTest.isOpen()) recentreOverlay.start();
+  };
+  const openGestureTest = () => {
+    if (!wizard.isOpen() && !recentreOverlay.isActive()) gestureTest.open();
   };
 
   button('calibrate').addEventListener('click', () => wizard.open());
   button('recentre').addEventListener('click', startRecentre);
+  button('gestures').addEventListener('click', openGestureTest);
   button('voice').addEventListener('click', onTestVoice);
   button('settings').addEventListener('click', onOpenSettings);
 
   document.addEventListener('keydown', (e) => {
     // Never react to letters typed into a form field (e.g. editing a phrase).
-    if (wizard.isOpen() || isBlocked() || ['SELECT', 'INPUT', 'TEXTAREA'].includes(e.target.tagName)) return;
+    if (wizard.isOpen() || gestureTest.isOpen() || isBlocked() || ['SELECT', 'INPUT', 'TEXTAREA'].includes(e.target.tagName)) return;
     const key = e.key.toLowerCase();
     if (key === 'p') onTogglePause();
     else if (key === 'k') wizard.open();
     else if (key === 'c') startRecentre();
+    else if (key === 'g') openGestureTest();
     else if (key === 't') onTestVoice();
     else if (key === 's') onOpenSettings();
     else if (key === 'escape') recentreOverlay.cancel();
@@ -104,11 +120,12 @@ export function createCaregiverControls(
 
   return {
     /** True while calibration or re-centre is using the camera frames. */
-    busy: () => wizard.isOpen() || recentreOverlay.isActive(),
+    busy: () => wizard.isOpen() || gestureTest.isOpen() || recentreOverlay.isActive(),
 
     /** Pass frames to whichever tool is busy. */
     feed(signals) {
       if (wizard.isOpen()) wizard.feed(signals);
+      else if (gestureTest.isOpen()) gestureTest.feed(signals);
       else recentreOverlay.feed(signals);
     },
 

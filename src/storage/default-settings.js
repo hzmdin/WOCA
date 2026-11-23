@@ -84,6 +84,14 @@ export const DEFAULT_SETTINGS = Object.freeze({
     startExtraMs: 1500, // extra time before the first move on a new screen
     speakTiles: false, // audio scan: say each highlighted tile aloud (for blurry vision)
   }),
+  // Gesture test (key G, caregiver): which gesture does the user do most reliably?
+  gestureTest: Object.freeze({
+    trials: 3, // tries per gesture (kept low: the user tires easily)
+    introMs: 4000, // time to read what comes next
+    restMs: 2500, // rest before each try; a detection now counts as accidental
+    promptMs: 5000, // time allowed for each try
+    okFraction: 0.66, // share of tries that must be detected to rate a gesture "ok"
+  }),
   speller: Object.freeze({
     suggestions: 3, // words offered in "Cadangan" (with Aksi + Kembali = max 5 tiles)
     minPrefix: 1, // letters typed before suggesting

@@ -207,6 +207,42 @@ export const STRINGS = Object.freeze({
     }),
   }),
 
+  // Gesture test (key G): which gesture does the user do best? Caregivers: please check the wording.
+  gestureTest: Object.freeze({
+    open: 'Uji gerakan',
+    title: 'Uji gerakan',
+    intro: 'Pilih gerakan yang mahu dicuba. Pengguna mencuba setiap gerakan 3 kali. WOCA mengira berapa kali ia dikesan dan berapa kali ia terpicu tanpa sengaja.',
+    calibrateFirst: 'Belum dikalibrasi. Tekan K dahulu supaya keputusan lebih tepat.',
+    start: 'Mula',
+    stop: 'Berhenti',
+    skip: 'Langkau gerakan ini',
+    close: 'Tutup',
+    again: 'Uji lagi',
+    stepOf: (g, n, trial, trials) => `Gerakan ${g} daripada ${n} · Cubaan ${trial} daripada ${trials}`,
+    next: (name) => `Seterusnya: ${name}`,
+    now: (name) => `SEKARANG: ${name}`,
+    rest: 'Rehat. Jangan bergerak.',
+    hit: '✔ Dikesan',
+    miss: '✘ Tidak dikesan',
+    resultsTitle: 'Keputusan',
+    recommend: (name) => `Paling sesuai untuk "Pilih": ${name}`,
+    noneRecommended: 'Tiada gerakan yang cukup stabil. Cuba Imbasan automatik, Imbasan bersuara dan Mod mudah (Tetapan).',
+    row: (name, hits, trials, avgMs, falseFires, rating) =>
+      `${name}: ${hits}/${trials} dikesan${avgMs ? ` · ${(avgMs / 1000).toFixed(1)} s` : ''} · ${falseFires} tidak sengaja · ${rating}`,
+    rowSkipped: (name) => `${name}: dilangkau`,
+    ratings: Object.freeze({ good: 'Sangat baik', ok: 'Boleh', poor: 'Sukar' }),
+    how: Object.freeze({
+      longBlink: 'Pejam mata kira-kira 1 saat, kemudian buka.',
+      eyesLeft: 'Tanpa gerak kepala, jeling ke kiri dan tahan, kemudian pandang skrin.',
+      eyesRight: 'Tanpa gerak kepala, jeling ke kanan dan tahan, kemudian pandang skrin.',
+      eyesUp: 'Tanpa gerak kepala, pandang ke atas dan tahan, kemudian pandang skrin.',
+      headLeft: 'Pusing kepala ke kiri dan tahan, kemudian kembali ke tengah.',
+      headRight: 'Pusing kepala ke kanan dan tahan, kemudian kembali ke tengah.',
+      headUp: 'Dongak kepala dan tahan, kemudian kembali.',
+      smile: 'Senyum dan tahan, kemudian rehat.',
+    }),
+  }),
+
   // Keyed by the codes from src/vision/camera.js
   cameraErrors: Object.freeze({
     denied:

@@ -324,8 +324,10 @@ h1 {
   align-items: center;
   justify-content: center;
   padding: 16px;
+  overflow-y: auto; /* a tall card (e.g. the gesture test list) scrolls on small screens */
   background: rgba(10, 12, 15, 0.94);
 }
+.wizard-card { margin: auto; } /* centres when short, scrolls from the top when tall */
 .wizard[hidden] { display: none; }
 .wizard-card { width: min(1000px, 100%); text-align: center; }
 .wizard-step { font-size: 28px; color: var(--muted); margin: 0 0 16px; }
@@ -502,3 +504,11 @@ h1 {
 /* Auto-scan: the highlight moves by itself, so the left/right arrows (head or eye
    turns) are not used; hide them to avoid suggesting a gesture that does nothing. */
 .board.scan .board-arrow { visibility: hidden; }
+
+/* Gesture test: tick-box list of the gestures to try. */
+.gtest-choices { display: grid; gap: 12px; justify-items: start; width: fit-content; margin: 0 auto 24px; font-size: 32px; text-align: left; }
+.gtest-choices[hidden] { display: none; }
+.gtest-choices input { width: 32px; height: 32px; accent-color: var(--accent); vertical-align: middle; }
+
+.gtest-choices ~ .wizard-status { font-size: 28px; line-height: 1.5; }
+.wizard-instruction.long { font-size: clamp(24px, 3vw, 36px); }

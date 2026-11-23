@@ -44,6 +44,7 @@
 |---|---|
 | `P` | Pause / resume |
 | `K` | Calibrate |
+| `G` | Gesture test: find which gesture the user does best |
 | `C` | Re-centre (after the bed angle changes) |
 | `S` | Settings (Tetapan) |
 | `T` | Test the voice |

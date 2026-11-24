@@ -8,10 +8,11 @@ import { createEngineState, stepEngine } from './gesture-engine.js';
 
 /** Gestures that make sense as SELECT, in the order they are tested. */
 export const TEST_GESTURES = Object.freeze([
-  'longBlink', 'eyesLeft', 'eyesRight', 'eyesUp', 'headLeft', 'headRight', 'headUp', 'smile',
+  'longBlink', 'eyesLeft', 'eyesRight', 'eyesUp', 'headLeft', 'headRight', 'headUp', 'browUp', 'smile', 'mouthOpen',
 ]);
-/** Smile is opt-in only (laughing causes false triggers), so it is not tested unless asked. */
-export const DEFAULT_TEST_GESTURES = Object.freeze(TEST_GESTURES.filter((g) => g !== 'smile'));
+/** Smile and mouth-open are opt-in only (laughing and talking trigger them), so they are not tested unless asked. */
+const OPT_IN = ['smile', 'mouthOpen'];
+export const DEFAULT_TEST_GESTURES = Object.freeze(TEST_GESTURES.filter((g) => !OPT_IN.includes(g)));
 
 const emptyResult = (gesture) => ({ gesture, hits: 0, hitMs: [], falseFires: 0, trials: 0, skipped: false });
 

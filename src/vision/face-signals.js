@@ -16,6 +16,9 @@ export const USED_BLENDSHAPES = Object.freeze([
   'mouthSmileLeft',
   'mouthSmileRight',
   'jawOpen',
+  'browInnerUp',
+  'browOuterUpLeft',
+  'browOuterUpRight',
 ]);
 
 // Sign conventions so that: +yaw = the user turns to THEIR left, +pitch = chin up,

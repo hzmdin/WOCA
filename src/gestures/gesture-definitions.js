@@ -31,6 +31,10 @@ export const MEASURES = Object.freeze({
   eyesDown: (s) => avg(s.blendshapes.eyeLookDownLeft, s.blendshapes.eyeLookDownRight),
   eyesClosed: (s) => avg(s.blendshapes.eyeBlinkLeft, s.blendshapes.eyeBlinkRight),
   smile: (s) => avg(s.blendshapes.mouthSmileLeft, s.blendshapes.mouthSmileRight),
+  // Raised eyebrows: the middle and both outer parts together, so one twitching brow doesn't count.
+  browUp: (s) =>
+    (((s.blendshapes.browInnerUp ?? 0) + avg(s.blendshapes.browOuterUpLeft, s.blendshapes.browOuterUpRight)) / 2),
+  mouthOpen: (s) => s.blendshapes.jawOpen ?? 0,
 });
 
 export const HEAD_KEYS = Object.freeze(['headLeft', 'headRight', 'headUp', 'headDown']);
@@ -93,4 +97,6 @@ export const GESTURES = Object.freeze({
     thresholdPct: (settings) => settings.closedThresholdPct,
   }),
   smile: hold('smile'),
+  browUp: hold('browUp'),
+  mouthOpen: hold('mouthOpen'),
 });

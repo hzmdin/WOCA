@@ -16,6 +16,8 @@ export const AVAILABLE_GESTURES = Object.freeze([
   'longBlink',
   'eyesClosed3s',
   'smile', // opt-in only: the user laughs naturally, so never a default SELECT
+  'browUp', // raise the eyebrows
+  'mouthOpen', // opt-in only: laughing and talking open the mouth too, so it can trigger by accident
 ]);
 
 export const DEFAULT_SETTINGS = Object.freeze({
@@ -129,7 +131,7 @@ export const DEFAULT_CALIBRATION = Object.freeze({
   version: 2,
   neutral: Object.freeze({ yaw: 0, pitch: 0, roll: 0 }),
   baseline: Object.freeze({
-    eyesLeft: 0, eyesRight: 0, eyesUp: 0, eyesDown: 0, eyesClosed: 0, smile: 0,
+    eyesLeft: 0, eyesRight: 0, eyesUp: 0, eyesDown: 0, eyesClosed: 0, smile: 0, browUp: 0, mouthOpen: 0,
   }),
   guard: null,
   ranges: Object.freeze({
@@ -143,6 +145,8 @@ export const DEFAULT_CALIBRATION = Object.freeze({
     eyesDown: 0.5,
     eyesClosed: 0.75, // a developer's closed eyes measured ~0.81
     smile: 0.6,
+    browUp: 0.5,
+    mouthOpen: 0.5,
   }),
   createdAt: null,
 });

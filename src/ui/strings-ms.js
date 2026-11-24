@@ -62,6 +62,7 @@ export const STRINGS = Object.freeze({
       headDown: 'Tunduk kepala', eyesLeft: 'Jeling ke kiri', eyesRight: 'Jeling ke kanan',
       eyesUp: 'Pandang ke atas', eyesDown: 'Pandang ke bawah', longBlink: 'Kelip lama (1 saat)',
       eyesClosed3s: 'Pejam mata 3 saat', smile: 'Senyum (tidak disyorkan)',
+      browUp: 'Angkat kening', mouthOpen: 'Buka mulut (tidak disyorkan: ketawa dan bercakap turut memicu)',
     }),
     fields: Object.freeze({
       thresholdPct: 'Kepekaan (lebih rendah = lebih mudah dikesan)',
@@ -190,6 +191,8 @@ export const STRINGS = Object.freeze({
       eyesDown: 'Mata ke bawah',
       eyesClosed: 'Pejam mata',
       smile: 'Senyum',
+      browUp: 'Angkat kening',
+      mouthOpen: 'Buka mulut',
     }),
     // One instruction per step (range key). Caregivers: please check the wording.
     steps: Object.freeze({
@@ -204,6 +207,8 @@ export const STRINGS = Object.freeze({
       eyesDown: 'Tanpa gerak kepala, pandang ke bawah, tahan 1 saat, kemudian pandang skrin. Buat 3 kali.',
       eyesClosed: 'Pejam mata kira-kira 2 saat, kemudian buka. Buat 3 kali.',
       smile: 'Senyum, tahan 1 saat, kemudian rehat. Buat 3 kali.',
+      browUp: 'Angkat kening, tahan 1 saat, kemudian rehat. Buat 3 kali.',
+      mouthOpen: 'Buka mulut, tahan 1 saat, kemudian tutup. Buat 3 kali.',
     }),
   }),
 
@@ -240,6 +245,8 @@ export const STRINGS = Object.freeze({
       headRight: 'Pusing kepala ke kanan dan tahan, kemudian kembali ke tengah.',
       headUp: 'Dongak kepala dan tahan, kemudian kembali.',
       smile: 'Senyum dan tahan, kemudian rehat.',
+      browUp: 'Angkat kening dan tahan, kemudian rehat.',
+      mouthOpen: 'Buka mulut dan tahan, kemudian tutup.',
     }),
   }),
 

@@ -23,7 +23,7 @@ The app turns face signals into a **small set of discrete events**. Each event m
 | `PAUSE` toggle | Eyes closed about 3 s, or caregiver key `P` | Lets the user rest without misfires |
 | `HELP` | Off by default (optional, 2 s hold) | Works on every screen, even while paused. Recommended with auto-scan, where "Tolong!" can take several steps to reach |
 
-The caregiver picks which gestures are on, based on what the user does reliably and comfortably. Smile as SELECT is **opt-in only** (laughing would cause false triggers).
+The caregiver picks which gestures are on, based on what the user does reliably and comfortably. Available gestures: head turns and nods, eyes left/right/up/down, long blink, eyes closed 3 s, **eyebrow raise**, smile and **mouth open**. Smile and mouth open are **opt-in only**: laughing and talking trigger them, so they are never a default and are not tested unless ticked in the gesture test. Eyebrow raise is a good candidate when the eyes are unreliable (the expression guard still ignores laughing while it is used). When mouth open is mapped, the guard no longer ignores an open mouth (it would block itself), but still ignores a smile.
 
 ## 4. Core features
 1. **Calibration wizard:** the user does each gesture 3 times while the app records their range and sets thresholds. Eye gestures require calibration.

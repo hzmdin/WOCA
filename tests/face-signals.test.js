@@ -55,7 +55,7 @@ describe('toFaceSignals', () => {
   const summary = (overrides = {}) => ({
     faceFound: true,
     landmarkCount: 478,
-    blendshapes: { eyeBlinkLeft: 0.81, browInnerUp: 0.3 },
+    blendshapes: { eyeBlinkLeft: 0.81, cheekPuff: 0.3 },
     matrix: matrix({ yaw: 10 }),
     ...overrides,
   });
@@ -68,7 +68,7 @@ describe('toFaceSignals', () => {
     expect(Object.keys(s.blendshapes)).toEqual([...USED_BLENDSHAPES]);
     expect(s.blendshapes.eyeBlinkLeft).toBe(0.81);
     expect(s.blendshapes.eyeBlinkRight).toBe(0); // missing -> 0
-    expect(s.blendshapes.browInnerUp).toBeUndefined(); // unused -> dropped
+    expect(s.blendshapes.cheekPuff).toBeUndefined(); // unused -> dropped
   });
 
   it('no face -> faceFound false with neutral values', () => {

@@ -2,7 +2,7 @@
 // can be restored after clearing the browser or moved to another laptop.
 // Pure: building and checking the data. The UI handles download/upload.
 import { pickEditable, mergeSettings, validateSettings } from './settings-store.js';
-import { isValidCalibration } from './calibration-store.js';
+import { isValidCalibration, normalizeCalibration } from './calibration-store.js';
 import { validateBoards } from '../ui/board-controller.js';
 import { DEFAULT_SETTINGS } from './default-settings.js';
 
@@ -41,5 +41,5 @@ export function readBackup(text) {
   const calibrationOk = isValidCalibration(data.calibration);
   if (validateSettings(settings).length || !boardsOk || !calibrationOk) return { ok: false, reason: 'invalid' };
 
-  return { ok: true, settings, boards: data.boards, calibration: data.calibration };
+  return { ok: true, settings, boards: data.boards, calibration: normalizeCalibration(data.calibration) };
 }

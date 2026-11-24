@@ -38,8 +38,8 @@ export function setPaused(state, paused) {
 
 /**
  * Is the mouth active enough that head/eye movement can't be trusted?
- * If the caregiver mapped `smile` as a gesture, smiling must not block itself,
- * so only the jaw part of the guard applies.
+ * If the caregiver mapped `smile` (or `mouthOpen`) as a gesture, that movement
+ * must not block itself, so only the other part of the guard applies.
  * Thresholds come from calibration (the user's resting mouth) when available.
  */
 export function mouthActive(signals, settings, calibration) {
@@ -47,9 +47,11 @@ export function mouthActive(signals, settings, calibration) {
   if (!g?.enabled) return false;
   const th = calibration?.guard ?? g;
   const b = signals.blendshapes;
-  const smileMapped = Object.values(settings.gestureMap).includes('smile');
+  const mapped = Object.values(settings.gestureMap);
+  const smileMapped = mapped.includes('smile');
+  const jawMapped = mapped.includes('mouthOpen');
   const smile = ((b.mouthSmileLeft ?? 0) + (b.mouthSmileRight ?? 0)) / 2;
-  return (!smileMapped && smile >= th.smile) || (b.jawOpen ?? 0) >= th.jawOpen;
+  return (!smileMapped && smile >= th.smile) || (!jawMapped && (b.jawOpen ?? 0) >= th.jawOpen);
 }
 
 const resetHolds = (slots) =>

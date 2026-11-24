@@ -10,7 +10,7 @@
 
 ## Features
 
-- **Eye and head gestures** via the webcam: look left/right, look up, long blink. Head turns can be used instead (settings).
+- **Eye, head and face gestures** via the webcam: look left/right, look up, long blink. Head turns, eyebrow raise or mouth open can be used instead (settings).
 - **Talking boards** in Malay: needs (water, pain, hot/cold, toilet, change position…), feelings, thanks. At most 6 big tiles per screen.
 - **Yes / No mode:** two huge halves; a glance to one side answers.
 - **Call for help:** a "Tolong!" tile (and an optional dedicated gesture) starts a loud, repeating alarm that **only the caregiver** can stop.
